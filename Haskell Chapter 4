@@ -1,0 +1,88 @@
+-- HC4T1 - Task 1
+
+weatherReport :: String -> String
+weatherReport "sunny" = "It's a bright and beautiful day!"
+weatherReport "rainy" = "Don't forget your umbrella!"
+weatherReport "cloudy" = "A bit gloomy, but no rain yet!"
+weatherReport _ = "Weather unknown"
+main :: IO ()
+main = putStrLn (weatherReport "sunny")
+
+
+-- HC4T2 - Task 2
+
+dayType :: String -> String
+dayType "Saturday" = "It's a weekend!"
+dayType "Sunday" = "It's a weekend!"
+dayType "Monday" = "It's a weekday."
+dayType "Tuesday" = "It's a weekday."
+dayType "Wednesday" = "It's a weekday."
+dayType "Thursday" = "It's a weekday."
+dayType "Friday" = "It's a weekday."
+dayType _ = "Invalid day"
+main :: IO ()
+main = putStrLn (dayType "Saturday")
+
+
+-- HC4T3 - Task 3
+
+gradeComment :: Int -> String
+gradeComment n | n >= 90 && n <= 100 = "Excellent!"
+gradeComment n | n >= 70 && n <= 89 = "Good job!"
+gradeComment n | n >= 50 && n <= 69 = "You passed."
+gradeComment n | n >= 0 && n <= 49 = "Better luck next time."
+gradeComment _ = "Invalid grade"
+main :: IO ()
+main = putStrLn (gradeComment 85)
+
+
+-- HC4T4 - Task 4
+
+specialBirthday :: Int -> String
+specialBirthday 1 = "First birthday in Soweto!"
+specialBirthday 18 = "Welcome to adulthood, Lerato!"
+specialBirthday 21 = "Cheers to 21, Sipho!"
+specialBirthday 50 = "Golden jubilee celebration!"
+specialBirthday _ = "Just another birthday"
+main :: IO ()
+main = putStrLn (specialBirthday 21)
+
+
+-- HC4T5 - Task 5
+
+specialBirthdayDetailed :: Int -> String
+specialBirthdayDetailed 1 = "First birthday in Soweto!"
+specialBirthdayDetailed 18 = "Welcome to adulthood, Lerato!"
+specialBirthdayDetailed 21 = "Cheers to 21, Sipho!"
+specialBirthdayDetailed 50 = "Golden jubilee celebration!"
+specialBirthdayDetailed age = "Happy " ++ show age ++ "th birthday, Thandi!"
+main :: IO ()
+main = putStrLn (specialBirthdayDetailed 27)
+
+
+-- HC4T6 - Task 6
+
+whatsInsideThisList :: [a] -> String
+whatsInsideThisList [] = "The list is empty"
+whatsInsideThisList [_] = "The list has one item"
+whatsInsideThisList [_, _] = "The list has two items"
+whatsInsideThisList _ = "The list has many items"
+main :: IO ()
+main = putStrLn (whatsInsideThisList [1,2,3])
+
+
+-- HC4T7 - Task 7
+
+firstAndThird :: [a] -> [a]
+firstAndThird (x:_:z:_) = [x,z]
+firstAndThird _ = []
+main :: IO ()
+main = print (firstAndThird [10,20,30,40])
+
+
+-- HC4T8 - Task 8
+
+describeTuple :: (String, Int) -> String
+describeTuple (name, age) = name ++ " is " ++ show age ++ " years old"
+main :: IO ()
+main = putStrLn (describeTuple ("Kagiso", 22))
