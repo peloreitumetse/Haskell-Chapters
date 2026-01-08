@@ -1,0 +1,69 @@
+-- HC5T1
+
+applyThrice :: (Int -> Int) -> Int -> Int
+applyThrice f x = f (f (f x))
+main :: IO ()
+main = print (applyThrice (+2) 5)
+
+-- HC5T2
+
+oddNumbers :: [Int]
+oddNumbers = filter odd [1..30]
+main :: IO ()
+main = print oddNumbers
+
+-- HC5T3
+
+hasUppercaseStart :: [String] -> Bool
+hasUppercaseStart = any (\w -> not (null w) && head w `elem` ['A'..'Z'])
+main :: IO ()
+main = print (hasUppercaseStart ["sipho","Thandi","kabelo"])
+
+-- HC5T4
+
+biggerThan10 :: Int -> Bool
+biggerThan10 = \x -> x > 10
+main :: IO ()
+main = print (biggerThan10 12)
+
+-- HC5T5
+
+multiplyByFive :: Int -> Int
+multiplyByFive = (*5)
+main :: IO ()
+main = print (multiplyByFive 7)
+
+-- HC5T6
+
+evenSquares :: [Int] -> [Int]
+evenSquares = filter even . map (^2)
+main :: IO ()
+main = print (evenSquares [1,2,3,4,5,6])
+
+-- HC5T7
+
+result :: Int
+result = sum $ map (*2) $ filter (>3) [1..10]
+main :: IO ()
+main = print result
+
+-- HC5T8
+
+addFive :: Int -> Int
+addFive = (+5)
+main :: IO ()
+main = print (addFive 10)
+
+-- HC5T9
+
+transformList :: (a -> a) -> [a] -> [a]
+transformList f = map (f . f)
+main :: IO ()
+main = print (transformList (+1) [1,2,3])
+
+-- HC5T10
+
+anySquareAbove50 :: [Int] -> Bool
+anySquareAbove50 = any (>50) . map (^2) . filter (>0)
+main :: IO ()
+main = print (anySquareAbove50 [3,5,6,7])
