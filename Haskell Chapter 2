@@ -1,0 +1,108 @@
+HC2T1 - Task 1: Checking Types
+--------------------------------
+
+main :: IO ()
+main= do
+  print (42 :: Int)
+  print (3.14 :: Double)
+  print ("Haskell" :: String)
+  print ('Z' :: Char)
+  print (True && False)
+
+--------------------------------
+-- HC2T2 - Task 2: Function Signatures
+--------------------------------
+
+add :: Int -> Int -> Int
+add a b = a + b
+
+isEven :: Int -> Bool
+isEven n = n `mod` 2 == 0
+
+concatStrings :: String -> String -> String
+concatStrings a b = a ++ b
+
+main:: IO ()
+main= do
+  print (add 6 9)
+  print (isEven 22)
+  print (concatStrings "Sawubona " "Mzansi")
+
+--------------------------------
+-- HC2T3 - Task 3: Immutable Variables
+--------------------------------
+
+myAge :: Int
+myAge = 23
+
+piValue :: Double
+piValue = 3.141592
+
+greeting :: String
+greeting = "Hello South Africa"
+
+isHaskellFun :: Bool
+isHaskellFun = True
+
+main:: IO ()
+main= do
+  print myAge
+  print piValue
+  print greeting
+  print isHaskellFun
+
+--------------------------------
+-- HC2T4 - Task 4: Infix & Prefix
+--------------------------------
+
+main :: IO ()
+main = do
+  print ((+) 5 3)
+  print ((*) 10 4)
+  print ((&&) True False)
+  print (7 + 2)
+  print (6 * 5)
+  print (True && False)
+
+--------------------------------
+-- HC- Task 5: Functions
+--------------------------------
+
+circleArea :: Float -> Float
+circleArea r = pi * r * r
+
+maxOfThree :: Int -> Int -> Int -> Int
+maxOfThree a b c = max a (max b c)
+
+main :: IO ()
+main= do
+  print (circleArea 4.5)
+  print (maxOfThree 17 42 29)
+
+--------------------------------
+-- HC2T6 - Task 6: Int vs Integer
+--------------------------------
+
+smallNumber :: Int
+smallNumber = 262
+
+bigNumber :: Integer
+bigNumber = 2127
+
+mainHC2T6 :: IO ()
+mainHC2T6 = do
+  print smallNumber
+  print bigNumber
+
+--------------------------------
+-- HC2T7 - Task 7: Boolean Expressions
+--------------------------------
+
+main:: IO ()
+main = do
+  print (True && True)
+  print (False || False)
+  print (not False)
+  print (9 > 20)
+
+
