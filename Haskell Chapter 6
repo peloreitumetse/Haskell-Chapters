@@ -1,0 +1,80 @@
+-- HC6T1
+
+factorial :: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial (n-1)
+main :: IO ()
+main = print (factorial 5)
+
+-- HC6T2
+
+fibonacci :: Int -> Int
+fibonacci 0 = 0
+fibonacci 1 = 1
+fibonacci n = fibonacci (n-1) + fibonacci (n-2)
+main :: IO ()
+main = print (fibonacci 7)
+
+-- HC6T3
+
+sumList :: [Int] -> Int
+sumList = foldr (+) 0
+main :: IO ()
+main = print (sumList [1,2,3,4,5])
+
+-- HC6T4
+
+productList :: [Int] -> Int
+productList = foldl (*) 1
+main :: IO ()
+main = print (productList [1,2,3,4,5])
+
+-- HC6T5
+
+reverseList :: [a] -> [a]
+reverseList [] = []
+reverseList (x:xs) = reverseList xs ++ [x]
+main :: IO ()
+main = print (reverseList [1,2,3,4])
+
+-- HC6T6
+
+elementExists :: Eq a => a -> [a] -> Bool
+elementExists _ [] = False
+elementExists e (x:xs)
+  | e == x = True
+  | otherwise = elementExists e xs
+main :: IO ()
+main = print (elementExists 3 [1,2,3,4])
+
+-- HC6T7
+
+listLength :: [a] -> Int
+listLength [] = 0
+listLength (_:xs) = 1 + listLength xs
+main :: IO ()
+main = print (listLength [1,2,3,4,5])
+
+-- HC6T8
+
+filterEven :: [Int] -> [Int]
+filterEven = filter even
+main :: IO ()
+main = print (filterEven [1..10])
+
+-- HC6T9
+
+myMap :: (a -> b) -> [a] -> [b]
+myMap _ [] = []
+myMap f (x:xs) = f x : myMap f xs
+main :: IO ()
+main = print (myMap (*2) [1,2,3,4])
+
+-- HC6T10
+
+digits :: Int -> [Int]
+digits n
+  | n < 10 = [n]
+  | otherwise = digits (n `div` 10) ++ [n `mod` 10]
+main :: IO ()
+main = print (digits 12345)
