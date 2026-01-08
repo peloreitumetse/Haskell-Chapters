@@ -1,0 +1,109 @@
+-- HC7T1
+
+data Color = Red | Green | Blue
+instance Eq Color where
+  Red == Red = True
+  Green == Green = True
+  Blue == Blue = True
+  _ == _ = False
+main :: IO ()
+main = print (Red == Green)
+
+-- HC7T2
+
+instance Ord Color where
+  Red <= _ = True
+  Green <= Red = False
+  Green <= Green = True
+  Green <= Blue = True
+  Blue <= Blue = True
+  Blue <= _ = False
+main :: IO ()
+main = print (Red < Blue)
+
+-- HC7T3
+
+compareValues :: (Eq a, Ord a) => a -> a -> a
+compareValues x y = if x >= y then x else y
+main :: IO ()
+main = print (compareValues 5 10)
+
+-- HC7T4
+
+data Shape = Circle Double | Rectangle Double Double
+instance Show Shape where
+  show (Circle r) = "Circle " ++ show r
+  show (Rectangle w h) = "Rectangle " ++ show w ++ " " ++ show h
+instance Read Shape where
+  readsPrec _ input =
+    case words input of
+      ["Circle", r] -> [(Circle (read r), "")]
+      ["Rectangle", w, h] -> [(Rectangle (read w) (read h), "")]
+      _ -> []
+main :: IO ()
+main = print (read "Circle 5" :: Shape)
+
+-- HC7T5
+
+squareArea :: Num a => a -> a
+squareArea side = side * side
+main :: IO ()
+main = print (squareArea 7)
+
+-- HC7T6
+
+circleCircumference :: (Real a, Floating b) => a -> b
+circleCircumference r = 2 * pi * fromIntegral (floor r)
+main :: IO ()
+main = print (circleCircumference 5)
+
+-- HC7T7
+
+instance Enum Color where
+  toEnum 0 = Red
+  toEnum 1 = Green
+  toEnum 2 = Blue
+  toEnum n = toEnum (n `mod` 3)
+  fromEnum Red = 0
+  fromEnum Green = 1
+  fromEnum Blue = 2
+
+instance Bounded Color where
+  minBound = Red
+  maxBound = Blue
+
+nextColor :: Color -> Color
+nextColor c = if c == maxBound then minBound else succ c
+main :: IO ()
+main = print (nextColor Green)
+
+-- HC7T8
+
+parseShape :: String -> Maybe Shape
+parseShape str = case reads str of
+  [(s, "")] -> Just s
+  _ -> Nothing
+main :: IO ()
+main = print (parseShape "Rectangle 3 4")
+
+-- HC7T9
+
+class Describable a where
+  describe :: a -> String
+
+instance Describable Bool where
+  describe True = "This is True"
+  describe False = "This is False"
+
+instance Describable Shape where
+  describe (Circle r) = "Circle with radius " ++ show r
+  describe (Rectangle w h) = "Rectangle with width " ++ show w ++ " and height " ++ show h
+main :: IO ()
+main = putStrLn (describe (Circle 5))
+
+-- HC7T10
+
+describeAndCompare :: (Describable a, Ord a) => a -> a -> String
+describeAndCompare x y = describe (if x >= y then x else y)
+main :: IO ()
+main = putStrLn (describeAndCompare (Circle 5) (Circle 3))
