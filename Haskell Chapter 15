@@ -1,0 +1,111 @@
+-- HC15T1
+import Control.Exception
+import System.IO
+main :: IO ()
+main = do
+  putStrLn "Enter filename:"
+  filename <- getLine
+  result <- try (readFile filename) :: IO (Either IOError String)
+  case result of
+    Left _ -> putStrLn "File not found."
+    Right content -> do
+      putStrLn "Enter distance (m):"
+      distStr <- getLine
+      putStrLn "Enter time (s):"
+      timeStr <- getLine
+      let distance = read distStr :: Double
+      let time = read timeStr :: Double
+      putStrLn ("Velocity: " ++ show (distance / time) ++ " m/s")
+
+-- HC15T2
+trafficLightAI :: String -> String
+trafficLightAI "Red" = "Stop"
+trafficLightAI "Yellow" = "Slow down"
+trafficLightAI "Green" = "Go"
+trafficLightAI _ = "Invalid light"
+main :: IO ()
+main = do
+  putStrLn "Enter traffic light color:"
+  color <- getLine
+  putStrLn (trafficLightAI color)
+
+-- HC15T3
+import Control.Exception
+data TrafficLightError = TrafficLightError String deriving Show
+instance Exception TrafficLightError
+checkLight :: String -> IO ()
+checkLight "Red" = putStrLn "Stop"
+checkLight "Green" = putStrLn "Go"
+checkLight "Yellow" = putStrLn "Slow down"
+checkLight x = throwIO (TrafficLightError ("Invalid traffic light: " ++ x))
+main :: IO ()
+main = checkLight "Blue"
+
+-- HC15T4
+handleLight :: TrafficLightError -> IO ()
+handleLight (TrafficLightError msg) = putStrLn ("Caught exception: " ++ msg)
+main :: IO ()
+main = checkLight "Purple" `catch` handleLight
+
+-- HC15T5
+safeDiv :: Double -> Double -> Maybe Double
+safeDiv _ 0 = Nothing
+safeDiv x y = Just (x / y)
+main :: IO ()
+main = print (safeDiv 10 2)
+
+-- HC15T6
+import Text.Read (readMaybe)
+main :: IO ()
+main = do
+  putStrLn "Enter a number:"
+  input <- getLine
+  case readMaybe input :: Maybe Int of
+    Nothing -> putStrLn "Invalid input"
+    Just n -> putStrLn ("You entered: " ++ show n)
+
+-- HC15T7
+calculateVelocity :: Maybe Double -> Maybe Double -> Maybe Double
+calculateVelocity (Just d) (Just t) | t /= 0 = Just (d / t)
+calculateVelocity _ _ = Nothing
+main :: IO ()
+main = do
+  putStrLn "Distance:"
+  d <- readMaybe <$> getLine
+  putStrLn "Time:"
+  t <- readMaybe <$> getLine
+  case calculateVelocity d t of
+    Just v -> putStrLn ("Velocity: " ++ show v)
+    Nothing -> putStrLn "Invalid input or division by zero"
+
+-- HC15T8
+safeDivEither :: Double -> Double -> Either String Double
+safeDivEither _ 0 = Left "Error: Division by zero"
+safeDivEither x y = Right (x / y)
+main :: IO ()
+main = print (safeDivEither 10 0)
+
+-- HC15T9
+main :: IO ()
+main = do
+  putStrLn "Enter filename:"
+  fname <- getLine
+  content <- try (readFile fname) :: IO (Either IOError String)
+  case content of
+    Left _ -> putStrLn "Cannot read file."
+    Right text -> putStrLn text
+
+-- HC15T10
+hybridVelocity :: Double -> Double -> IO (Either String Double)
+hybridVelocity _ 0 = return (Left "Divide by zero")
+hybridVelocity d t = return (Right (d / t))
+main :: IO ()
+main = do
+  putStrLn "Enter distance:"
+  d <- read <$> getLine :: IO Double
+  putStrLn "Enter time:"
+  t <- read <$> getLine :: IO Double
+  result <- hybridVelocity d t
+  case result of
+    Left err -> putStrLn err
+    Right v -> putStrLn ("Velocity: " ++ show v)
