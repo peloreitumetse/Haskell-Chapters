@@ -1,0 +1,215 @@
+-- HC10T1
+
+data PaymentMethod = Cash | Card | Cryptocurrency deriving Show
+class ShowSimple a where
+  showSimple :: a -> String
+instance ShowSimple PaymentMethod where
+  showSimple Cash = "Cash"
+  showSimple Card = "Card"
+  showSimple Cryptocurrency = "Crypto"
+main :: IO ()
+main = putStrLn (showSimple Card)
+
+-- HC10T2
+
+class Summable a where
+  sumUp :: [a] -> a
+instance Summable Int where
+  sumUp = sum
+main :: IO ()
+main = print (sumUp [1,2,3,4,5])
+
+-- HC10T3
+
+data Blockchain = Bitcoin Int | Ethereum Int deriving Show
+class Comparable a where
+  compareWith :: a -> a -> Ordering
+instance Comparable Blockchain where
+  compareWith (Bitcoin x) (Bitcoin y) = compare x y
+  compareWith (Ethereum x) (Ethereum y) = compare x y
+  compareWith (Bitcoin _) (Ethereum _) = LT
+  compareWith (Ethereum _) (Bitcoin _) = GT
+main :: IO ()
+main = print (compareWith (Bitcoin 5) (Ethereum 3))
+
+-- HC10T4
+
+data Box a = Empty | Has a deriving Show
+instance Eq a => Eq (Box a) where
+  Empty == Empty = True
+  Has x == Has y = x == y
+  _ == _ = False
+main :: IO ()
+main = print (Has 5 == Has 5)
+
+-- HC10T5
+
+data User = User { userName :: String, userAge :: Int } deriving Show
+class ShowDetailed a where
+  showDetailed :: a -> String
+instance ShowDetailed User where
+  showDetailed (User n a) = n ++ " is " ++ show a ++ " years old"
+main :: IO ()
+main = putStrLn (showDetailed (User "Thandi" 22))
+
+-- HC10T6
+
+instance Eq Blockchain where
+  x == y = not (x /= y)
+  x /= y = case (x,y) of
+    (Bitcoin a, Bitcoin b) -> a /= b
+    (Ethereum a, Ethereum b) -> a /= b
+    _ -> True
+main :: IO ()
+main = print (Bitcoin 5 == Bitcoin 5)
+
+-- HC10T7
+
+class Convertible a b where
+  convert :: a -> b
+instance Convertible PaymentMethod String where
+  convert Cash = "Cash"
+  convert Card = "Card"
+  convert Cryptocurrency = "Crypto"
+main :: IO ()
+main = putStrLn (convert Cash)
+
+-- HC10T8
+
+class Eq a => AdvancedEq a where
+  compareEquality :: a -> a -> Bool
+instance AdvancedEq Blockchain where
+  compareEquality (Bitcoin x) (Bitcoin y) = x == y
+  compareEquality (Ethereum x) (Ethereum y) = x == y
+  compareEquality _ _ = False
+main :: IO ()
+main = print (compareEquality (Bitcoin 5) (Bitcoin 5))
+
+-- HC10T9
+
+class MinMax a where
+  minValue :: a
+  maxValue :: a
+instance MinMax Int where
+  minValue = minBound
+  maxValue = maxBound
+main :: IO ()
+main = print (minValue :: Int)
+
+-- HC10T10
+
+class Concatenatable a where
+  concatWith :: a -> a -> a
+instance Concatenatable [Char] where
+  concatWith = (++)
+main :: IO ()
+main = putStrLn (concatWith "Hello " "World")
+
+-- HC11T1
+
+class WeAccept a where
+  accepted :: [a] -> [a]
+instance WeAccept (Box a) where
+  accepted = filter (/= Empty)
+main :: IO ()
+main = print (accepted [Empty, Has 5, Has 10])
+
+-- HC11T2
+
+data Cardano = Cardano deriving Show
+data Cash = CashPM deriving Show
+data Country = CountryPM deriving Show
+class WeAcceptFancy a where
+  fancyFunction :: a -> String
+instance WeAcceptFancy Cardano where fancyFunction _ = "Accepted Cardano"
+instance WeAcceptFancy Cash where fancyFunction _ = "Accepted Cash"
+instance WeAcceptFancy Country where fancyFunction _ = "Accepted Country"
+main :: IO ()
+main = do
+  putStrLn (fancyFunction Cardano)
+  putStrLn (fancyFunction Cash)
+  putStrLn (fancyFunction Country)
+
+-- HC11T3
+
+class Container c where
+  isEmpty :: c a -> Bool
+  contains :: Eq a => c a -> a -> Bool
+  replace :: c a -> a -> c a
+instance Container Box where
+  isEmpty Empty = True
+  isEmpty _ = False
+  contains Empty _ = False
+  contains (Has x) y = x == y
+  replace _ val = Has val
+main :: IO ()
+main = print (contains (Has 5) 5)
+
+-- HC11T4
+
+data Present a = PresentEmpty | PresentHas a deriving Show
+instance Container Present where
+  isEmpty PresentEmpty = True
+  isEmpty _ = False
+  contains PresentEmpty _ = False
+  contains (PresentHas x) y = x == y
+  replace _ val = PresentHas val
+main :: IO ()
+main = print (contains (PresentHas 10) 10)
+
+-- HC11T5
+
+guessWhatsInside :: (Container c, Eq a) => c a -> a -> Bool
+guessWhatsInside c x = contains c x
+main :: IO ()
+main = print (guessWhatsInside (Has 5) 5)
+
+-- HC11T6
+
+class Eq a => AdvancedEq a where
+  compareEquality :: a -> a -> Bool
+instance AdvancedEq Blockchain where
+  compareEquality (Bitcoin x) (Bitcoin y) = x == y
+  compareEquality (Ethereum x) (Ethereum y) = x == y
+  compareEquality _ _ = False
+main :: IO ()
+main = print (compareEquality (Bitcoin 5) (Bitcoin 5))
+
+-- HC11T7
+
+instance Ord a => Ord (Box a) where
+  compare Empty Empty = EQ
+  compare Empty _ = LT
+  compare _ Empty = GT
+  compare (Has x) (Has y) = compare x y
+main :: IO ()
+main = print (compare (Has 5) (Has 10))
+
+-- HC11T8
+
+data PaymentMethod = CashPM | CardPM | CryptoPM deriving (Eq, Ord, Show)
+main :: IO ()
+main = print (CardPM > CashPM)
+
+-- HC11T9
+
+data Length = M Int | Km Int deriving Show
+instance Eq Length where
+  (M x) == (M y) = x == y
+  (Km x) == (Km y) = x == y
+  (M x) == (Km y) = x == y * 1000
+  (Km x) == (M y) = x * 1000 == y
+instance Ord Length where
+  compare (M x) (M y) = compare x y
+  compare (Km x) (Km y) = compare x y
+  compare (M x) (Km y) = compare x (y*1000)
+  compare (Km x) (M y) = compare (x*1000) y
+main :: IO ()
+main = print (M 500 < Km 1)
+
+-- HC11T10
+
+sortContainers :: Ord a => [Box a] -> [Box a]
+sortContainers = sort
+main :: IO ()
+main = print (sortContainers [Has 5, Empty, Has 2])
