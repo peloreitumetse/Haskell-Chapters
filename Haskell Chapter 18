@@ -1,0 +1,125 @@
+-- HC18T1
+import Data.Char (toLower)
+mapToLower :: [Char] -> [Char]
+mapToLower = fmap toLower
+main :: IO ()
+main = print (mapToLower "HaSkElL")
+
+-- HC18T2
+data Tree a = Empty | Node a (Tree a) (Tree a) deriving Show
+instance Functor Tree where
+  fmap _ Empty = Empty
+  fmap f (Node x l r) = Node (f x) (fmap f l) (fmap f r)
+main :: IO ()
+main = print (fmap (+1) (Node 2 Empty (Node 3 Empty Empty)))
+
+-- HC18T3
+incrementTreeValues :: Tree Int -> Tree Int
+incrementTreeValues = fmap (+1)
+main :: IO ()
+main = print (incrementTreeValues (Node 1 (Node 2 Empty Empty) Empty))
+
+-- HC18T4
+mapToBits :: [Bool] -> [Char]
+mapToBits = fmap (\b -> if b then '1' else '0')
+main :: IO ()
+main = print (mapToBits [True, False, True])
+
+-- HC18T5
+instance Functor (Either a) where
+  fmap _ (Left x) = Left x
+  fmap f (Right y) = Right (f y)
+main :: IO ()
+main = print (fmap (+10) (Right 5 :: Either String Int))
+
+-- HC18T6
+applyToMaybe :: (a -> b) -> Maybe a -> Maybe b
+applyToMaybe = fmap
+main :: IO ()
+main = print (applyToMaybe (*2) (Just 5))
+
+-- HC18T7
+fmapTuple :: (b -> c) -> (a,b) -> (a,c)
+fmapTuple = fmap
+main :: IO ()
+main = print (fmapTuple (+3) ("Age", 10))
+
+-- HC18T8
+identityLawCheck :: (Functor f, Eq (f a)) => f a -> Bool
+identityLawCheck x = fmap id x == x
+main :: IO ()
+main = print (identityLawCheck (Just 5))
+
+-- HC18T9
+compositionLawCheck :: (Functor f, Eq (f c)) => (b -> c) -> (a -> b) -> f a -> Bool
+compositionLawCheck f g x = fmap (f . g) x == (fmap f . fmap g) x
+main :: IO ()
+main = print (compositionLawCheck (+1) (*2) (Just 5))
+
+-- HC18T10
+nestedFmap :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
+nestedFmap = fmap . fmap
+main :: IO ()
+main = print (nestedFmap (+1) (Just [1,2,3]))
+
+-- HC11T1
+instance Functor ((,,) a b) where
+  fmap f (x,y,z) = (x,y,f z)
+main :: IO ()
+main = print (fmap (+10) ("Name", 5, 20))
+
+-- HC11T2
+fmapTriple :: (c -> d) -> (a,b,c) -> (a,b,d)
+fmapTriple = fmap
+main :: IO ()
+main = print (fmapTriple (*2) ("Age", "Years", 15))
+
+-- HC12T1
+nestedMap :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
+nestedMap = fmap . fmap
+main :: IO ()
+main = print (nestedMap (+5) [Just 1, Just 2])
+
+-- HC12T2
+identityLawNestedCheck :: (Functor f, Functor g, Eq (f (g a))) => f (g a) -> Bool
+identityLawNestedCheck x = nestedMap id x == x
+main :: IO ()
+main = print (identityLawNestedCheck [Just 1, Just 2])
+
+-- HC13T1
+instance Functor ((->) r) where
+  fmap = (.)
+main :: IO ()
+main = print ((fmap (+2) (*3)) 5)
+
+-- HC13T2
+fmapFuncCompose :: (b -> c) -> (a -> b) -> a -> c
+fmapFuncCompose = fmap
+main :: IO ()
+main = print ((fmapFuncCompose (+1) (*2)) 4)
+
+-- HC14T1
+replaceInFunctor :: Functor f => a -> f b -> f a
+replaceInFunctor = (<$)
+main :: IO ()
+main = print (replaceInFunctor 0 (Just 5))
+
+-- HC14T2
+($>) :: Functor f => f a -> b -> f b
+fa $> b = b <$ fa
+main :: IO ()
+main = print (Just 5 $> 0)
+
+-- HC15T1
+applyVoid :: Functor f => f a -> f ()
+applyVoid = void
+main :: IO ()
+main = print (applyVoid (Just 5))
+
+-- HC15T2
+import Data.Functor (void)
+main :: IO ()
+main = do
+  print (void (Just 10))
+  print (void [1,2,3])
+  print (void (Node 5 Empty Empty))
