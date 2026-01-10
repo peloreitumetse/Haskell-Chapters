@@ -1,0 +1,174 @@
+-- HC20T1
+safeDivide :: Double -> Double -> Maybe Double
+safeDivide _ 0 = Nothing
+safeDivide x y = Just (x / y)
+main :: IO ()
+main = print (safeDivide 10 2) >> print (safeDivide 5 0)
+
+-- HC20T2
+sequenceMaybe :: [Maybe a] -> Maybe [a]
+sequenceMaybe = sequenceA
+main :: IO ()
+main = print (sequenceMaybe [Just 1, Just 2, Just 3]) >> print (sequenceMaybe [Just 1, Nothing, Just 3])
+
+-- HC20T3
+import Control.Monad.Writer
+loggingCalculator :: Writer [String] Int
+loggingCalculator = do
+  tell ["Adding 3 + 5"]
+  let a = 3 + 5
+  tell ["Multiplying result by 2"]
+  let b = a * 2
+  return b
+main :: IO ()
+main = print (runWriter loggingCalculator)
+
+-- HC20T4
+import Control.Monad.State
+countChars :: Char -> String -> State Int ()
+countChars c s = put (length $ filter (==c) s)
+main :: IO ()
+main = print (execState (countChars 'a' "banana") 0)
+
+-- HC20T5
+import Control.Monad.Reader
+type Config = String
+greetUser :: Reader Config String
+greetUser = do
+  name <- ask
+  return ("Hello, " ++ name)
+main :: IO ()
+main = print (runReader greetUser "Sipho")
+
+-- HC20T6
+doubleMonad :: Maybe Int -> [Int]
+doubleMonad mx = do
+  x <- maybeToList mx
+  [x, x*2]
+main :: IO ()
+main = print (doubleMonad (Just 3)) >> print (doubleMonad Nothing)
+
+-- HC20T7
+findFirst :: Eq a => a -> [a] -> Either String a
+findFirst x xs = case filter (==x) xs of
+  (y:_) -> Right y
+  [] -> Left "Not found"
+main :: IO ()
+main = print (findFirst 3 [1,2,3,4]) >> print (findFirst 5 [1,2,3])
+
+-- HC20T8
+newtype Parser a = Parser { runParser :: String -> Maybe (a,String) }
+simpleDigit :: Parser Char
+simpleDigit = Parser f where f (c:cs) | c `elem` ['0'..'9'] = Just (c,cs)
+                                     | otherwise = Nothing
+                                     f [] = Nothing
+main :: IO ()
+main = print (runParser simpleDigit "5abc") >> print (runParser simpleDigit "abc")
+
+-- HC20T9
+import Data.Functor.Identity
+replicateMonad :: Int -> a -> Identity [a]
+replicateMonad n x = Identity (replicate n x)
+main :: IO ()
+main = print (runIdentity (replicateMonad 3 'x'))
+
+-- HC20T10
+import Control.Monad.Trans.Maybe
+import Control.Monad.Trans.State
+nestedMonad :: MaybeT (State Int) Int
+nestedMonad = MaybeT $ do
+  s <- get
+  put (s+1)
+  return (Just s)
+main :: IO ()
+main = print (runState (runMaybeT nestedMonad) 0)
+
+-- HC20T11
+randomWalk :: State Int Int
+randomWalk = do
+  s <- get
+  put (s+1)
+  return s
+main :: IO ()
+main = print (runState randomWalk 0)
+
+-- HC20T12
+main :: IO ()
+main = do
+  putStrLn "Enter filename:"
+  filename <- getLine
+  content <- readFile filename
+  putStrLn content
+
+-- HC20T13
+fibonacciMemo :: Int -> State (Map Int Int) Int
+fibonacciMemo 0 = return 0
+fibonacciMemo 1 = return 1
+fibonacciMemo n = do
+  memo <- get
+  case Map.lookup n memo of
+    Just val -> return val
+    Nothing -> do
+      a <- fibonacciMemo (n-1)
+      b <- fibonacciMemo (n-2)
+      let val = a + b
+      modify (Map.insert n val)
+      return val
+main :: IO ()
+main = print (evalState (fibonacciMemo 10) Map.empty)
+
+-- HC20T14
+mapMFilter :: Monad m => (a -> m Bool) -> [a] -> m [a]
+mapMFilter f xs = filterM f xs
+main :: IO ()
+main = mapMFilter (\x -> return (x>2)) [1,2,3,4] >>= print
+
+-- HC20T15
+data Tree a = Empty | Node a (Tree a) (Tree a)
+treeSum :: Num a => Tree a -> a
+treeSum Empty = 0
+treeSum (Node x l r) = x + treeSum l + treeSum r
+main :: IO ()
+main = print (treeSum (Node 1 (Node 2 Empty Empty) (Node 3 Empty Empty)))
+
+-- HC20T16
+retryIO :: Int -> IO a -> IO (Maybe a)
+retryIO 0 _ = return Nothing
+retryIO n action = (Just <$> action) `catch` \(_ :: IOError) -> retryIO (n-1) action
+main :: IO ()
+main = print "retryIO demonstration skipped"
+
+-- HC20T17
+validatePassword :: String -> Either String String
+validatePassword pw
+  | length pw < 6 = Left "Too short"
+  | not (any (`elem` ['0'..'9']) pw) = Left "No number"
+  | otherwise = Right pw
+main :: IO ()
+main = print (validatePassword "abc") >> print (validatePassword "abc123")
+
+-- HC20T18
+import Control.Monad.Trans.Maybe
+import Control.Monad.IO.Class
+maybeInput :: MaybeT IO String
+maybeInput = do
+  liftIO $ putStrLn "Enter a string:"
+  s <- liftIO getLine
+  if null s then MaybeT (return Nothing) else return s
+main :: IO ()
+main = runMaybeT maybeInput >>= print
+
+-- HC20T19
+import Control.Monad.Writer
+logFunction :: Int -> Writer [String] Int
+logFunction x = do
+  tell ["Function called with " ++ show x]
+  return (x*2)
+main :: IO ()
+main = print (runWriter (logFunction 5))
+
+-- HC20T20
+batchProcessing :: IO ()
+batchProcessing = putStrLn "Step 1" >>= \_ -> putStrLn "Step 2" >>= \_ -> putStrLn "Step 3"
+main :: IO ()
+main = batchProcessing
