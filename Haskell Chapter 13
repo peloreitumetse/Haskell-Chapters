@@ -1,0 +1,90 @@
+-- HC13T1
+import System.Directory
+main :: IO ()
+main = do
+  files <- listDirectory "."
+  print files
+
+-- HC13T2
+import System.Directory
+import Data.List (isInfixOf)
+filterFiles :: String -> IO [FilePath]
+filterFiles sub = do
+  files <- listDirectory "."
+  return (filter (isInfixOf sub) files)
+main :: IO ()
+main = do
+  filtered <- filterFiles "hs"
+  print filtered
+
+-- HC13T3
+import System.Directory
+import Data.List (isInfixOf, sort)
+sortedFilteredFiles :: String -> IO [FilePath]
+sortedFilteredFiles sub = do
+  files <- listDirectory "."
+  return (sort (filter (isInfixOf sub) files))
+main :: IO ()
+main = do
+  sorted <- sortedFilteredFiles "hs"
+  print sorted
+
+-- HC13T4
+module SumNonEmpty (sumNonEmpty) where
+sumNonEmpty :: [Int] -> Int
+sumNonEmpty [] = errorMsg
+sumNonEmpty xs = sum xs
+errorMsg :: Int
+errorMsg = error "Cannot sum an empty list"
+
+-- HC13T5
+module SumNonEmpty (sumNonEmpty) where
+sumNonEmpty :: [Int] -> Int
+sumNonEmpty [] = error "Cannot sum an empty list"
+sumNonEmpty xs = sum xs
+
+-- HC13T6
+import System.Directory
+import Data.List (isInfixOf)
+import qualified Data.Map as Map
+filesToMap :: String -> IO (Map.Map FilePath Int)
+filesToMap sub = do
+  files <- listDirectory "."
+  let filtered = filter (isInfixOf sub) files
+  return (Map.fromList (zip filtered [1..]))
+main :: IO ()
+main = do
+  fmap <- filesToMap "hs"
+  print fmap
+
+-- HC13T7
+import SumNonEmpty
+main :: IO ()
+main = print (sumNonEmpty [1,2,3,4])
+
+-- HC13T8
+import qualified Data.List as L
+import qualified Data.Set as S
+main :: IO ()
+main = do
+  print (L.sort [3,1,2])
+  print (S.fromList [1,2,2,3])
+
+-- HC13T9
+import qualified Data.List as List
+import qualified Data.Set as Set
+main :: IO ()
+main = do
+  let l = List.sort [3,2,1]
+  let s = Set.fromList [1,2,2,3]
+  print l
+  print s
+
+-- HC13T10
+import System.Directory
+import Data.List (isInfixOf, sort)
+main :: IO ()
+main = do
+  files <- listDirectory "."
+  let filtered = filter (isInfixOf "hs") files
+  print (sort filtered)
