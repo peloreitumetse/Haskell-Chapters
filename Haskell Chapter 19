@@ -1,0 +1,131 @@
+-- HC19T1
+data Pair a = Pair a a deriving Show
+instance Functor Pair where
+  fmap f (Pair x y) = Pair (f x) (f y)
+instance Applicative Pair where
+  pure x = Pair x x
+  Pair f g <*> Pair x y = Pair (f x) (g y)
+main :: IO ()
+main = print (Pair (+1) (*2) <*> Pair 3 4)
+
+-- HC19T2
+addThreeApplicative :: Maybe Int -> Maybe Int -> Maybe Int -> Maybe Int
+addThreeApplicative a b c = (+) <$> a <*> b <*> c
+main :: IO ()
+main = print (addThreeApplicative (Just 1) (Just 2) (Just 3))
+
+-- HC19T3
+safeProduct :: [Maybe Int] -> Maybe Int
+safeProduct = foldr (liftA2 (*)) (Just 1)
+main :: IO ()
+main = print (safeProduct [Just 2, Just 3, Just 4])
+
+-- HC19T4
+import Control.Applicative (liftA2)
+liftAndMultiply :: Maybe Int -> Maybe Int -> Maybe Int
+liftAndMultiply = liftA2 (*)
+main :: IO ()
+main = print (liftAndMultiply (Just 3) (Just 4))
+
+-- HC19T5
+applyEffects :: (IO Int, IO Int) -> IO Int
+applyEffects (mx,my) = (+) <$> mx <*> my
+main :: IO ()
+main = applyEffects (print 3 >> return 3, print 5 >> return 5) >>= print
+
+-- HC19T6
+import Control.Monad (forever)
+repeatEffect :: IO () -> IO ()
+repeatEffect = forever
+main :: IO ()
+main = return () -- no infinite loop for safety
+
+-- HC19T7
+import Control.Monad (when)
+conditionalPrint :: Bool -> String -> IO ()
+conditionalPrint cond msg = when cond (putStrLn msg)
+main :: IO ()
+main = conditionalPrint True "Hello" >> conditionalPrint False "Won't print"
+
+-- HC19T8
+discardSecond :: IO a -> IO b -> IO a
+discardSecond = (<*)
+main :: IO ()
+main = discardSecond (print 1 >> return 10) (print 2) >>= print
+
+-- HC19T9
+pureAndApply :: Maybe Int
+pureAndApply = pure (+3) <*> Just 7
+main :: IO ()
+main = print pureAndApply
+
+-- HC19T10
+combineResults :: Either String Int -> Either String Int -> Either String Int
+combineResults = liftA2 (+)
+main :: IO ()
+main = print (combineResults (Right 3) (Right 5))
+
+-- HC11T1
+data Wrapper a = Wrap a deriving Show
+instance Functor Wrapper where
+  fmap f (Wrap x) = Wrap (f x)
+instance Applicative Wrapper where
+  pure = Wrap
+  Wrap f <*> Wrap x = Wrap (f x)
+main :: IO ()
+main = print (Wrap (+2) <*> Wrap 5)
+
+-- HC11T2
+sumThreeApplicative :: Either String Int -> Either String Int -> Either String Int -> Either String Int
+sumThreeApplicative a b c = (+) <$> a <*> b <*> c
+main :: IO ()
+main = print (sumThreeApplicative (Right 1) (Right 2) (Right 3))
+
+-- HC12T1
+whenApplicative :: Bool -> IO () -> IO ()
+whenApplicative cond action = if cond then action else pure ()
+main :: IO ()
+main = whenApplicative True (putStrLn "It worked!")
+
+-- HC12T2
+import Control.Monad (replicateM)
+replicateEffect :: Int -> IO a -> IO [a]
+replicateEffect = replicateM
+main :: IO ()
+main = replicateEffect 3 (print 5 >> return 5) >>= print
+
+-- HC13T1
+sequenceEffects :: Applicative f => [f a] -> f [a]
+sequenceEffects = sequenceA
+main :: IO ()
+main = print (sequenceEffects [Just 1, Just 2, Just 3])
+
+-- HC14T1
+applyWithEffects :: IO Int -> IO Int -> IO Int
+applyWithEffects = liftA2 (+)
+main :: IO ()
+main = applyWithEffects (return 3) (return 4) >>= print
+
+-- HC15T1
+simulateMaybeEffect :: (Int -> Int -> Int) -> Maybe Int -> Maybe Int -> Maybe Int
+simulateMaybeEffect = liftA2
+main :: IO ()
+main = print (simulateMaybeEffect (*) (Just 3) (Just 4))
+
+-- HC16T1
+combineEitherResults :: Either String Int -> Either String Int -> Either String Int
+combineEitherResults = liftA2 (+)
+main :: IO ()
+main = print (combineEitherResults (Right 5) (Right 10))
+
+-- HC17T1
+sequenceApplicative :: [Maybe a] -> Maybe [a]
+sequenceApplicative = sequenceA
+main :: IO ()
+main = print (sequenceApplicative [Just 1, Just 2, Just 3])
+
+-- HC18T1
+replicateForever :: IO () -> IO ()
+replicateForever = forever
+main :: IO ()
+main = return () -- infinite loop avoided
