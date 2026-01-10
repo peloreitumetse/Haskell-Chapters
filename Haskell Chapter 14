@@ -1,0 +1,78 @@
+-- HC14T1
+main :: IO ()
+main = putStrLn "Hello, Cabal!"
+
+-- HC14T2
+import System.Random
+main :: IO ()
+main = do
+  n <- randomRIO (1,100) :: IO Int
+  putStrLn ("Random number: " ++ show n)
+
+-- HC14T3
+{-# LANGUAGE NumericUnderscores #-}
+main :: IO ()
+main = do
+  let bigNumber = 1_000_000
+  let hugeNumber = 123_456_789
+  print bigNumber
+  print hugeNumber
+
+-- HC14T4
+{-# LANGUAGE TypeApplications #-}
+readInt :: String -> Int
+readInt s = read @Int s
+main :: IO ()
+main = print (readInt "42")
+
+-- HC14T5
+data Result a = Success a | Failure String deriving Show
+main :: IO ()
+main = do
+  let res@(Success val) = Success 100
+  case res of
+    Success x -> putStrLn ("Success with value: " ++ show x)
+    Failure msg -> putStrLn ("Failed: " ++ msg)
+
+-- HC14T6
+-- Project structure:
+-- project/
+-- ├─ app/Main.hs       -- main module
+-- └─ src/Utils.hs      -- additional modules
+main :: IO ()
+main = putStrLn "Project structure with src and app folders"
+
+-- HC14T7
+-- .cabal file example (excerpt)
+-- library
+--   exposed-modules:     Utils
+--   hs-source-dirs:      src
+-- executable myapp
+--   main-is:             Main.hs
+--   hs-source-dirs:      app
+--   build-depends:       base, myproject
+
+-- HC14T8
+counts :: String -> [(Char, Int)]
+counts str = map (\c -> (c, length (filter (==c) str))) (unique str)
+  where unique [] = []
+        unique (x:xs) = x : unique (filter (/= x) xs)
+main :: IO ()
+main = print (counts "haskell")
+
+-- HC14T9
+{-# LANGUAGE PartialTypeSignatures #-}
+add :: _ -> _ -> Int
+add x y = x + y
+main :: IO ()
+main = print (add 5 7)
+
+-- HC14T10
+-- test/Spec.hs
+-- import Test.Hspec
+-- import ModuleWithCounts
+-- main :: IO ()
+-- main = hspec $ do
+--   describe "counts" $ do
+--     it "counts characters correctly" $ do
+--       counts "aaab" `shouldBe` [('a',3),('b',1)]
