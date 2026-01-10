@@ -1,0 +1,88 @@
+-- HC11T1
+main :: IO ()
+main = do
+  putStrLn "Enter your name:"
+  name <- getLine
+  putStrLn ("Hello, " ++ name ++ "!")
+
+-- HC11T2
+main :: IO ()
+main = do
+  putStrLn "Enter a line of text:"
+  line <- getLine
+  putStrLn ("Number of characters: " ++ show (length line))
+
+-- HC11T3
+main :: IO ()
+main = do
+  putStrLn "Enter a number:"
+  num <- getLine
+  let n = read num :: Int
+  putStrLn ("Double the number is: " ++ show (n * 2))
+
+-- HC11T4
+main :: IO ()
+main = do
+  putStrLn "Enter first line:"
+  line1 <- getLine
+  putStrLn "Enter second line:"
+  line2 <- getLine
+  putStrLn ("Concatenated: " ++ line1 ++ line2)
+
+-- HC11T5
+main :: IO ()
+main = loop
+  where
+    loop = do
+      putStrLn "Enter something (type 'quit' to exit):"
+      input <- getLine
+      if input == "quit" then putStrLn "Goodbye!"
+      else loop
+
+-- HC11T6
+import Data.Char (toUpper)
+main :: IO ()
+main = do
+  putStrLn "Enter a line:"
+  line <- getLine
+  putStrLn (map toUpper line)
+
+-- HC11T7
+main :: IO ()
+main = do
+  putStrLn "Choose an option (1,2,3):"
+  putStrLn "1. Greet"
+  putStrLn "2. Say Goodbye"
+  putStrLn "3. Do Nothing"
+  choice <- getLine
+  case choice of
+    "1" -> putStrLn "Hello!"
+    "2" -> putStrLn "Goodbye!"
+    "3" -> putStrLn "Nothing done."
+    _   -> putStrLn "Invalid choice."
+
+-- HC11T8
+main :: IO ()
+main = do
+  putStrLn "Enter a number:"
+  num <- getLine
+  let n = read num :: Int
+  putStrLn (if even n then "Even" else "Odd")
+
+-- HC11T9
+main :: IO ()
+main = do
+  putStrLn "Enter first number:"
+  num1 <- getLine
+  putStrLn "Enter second number:"
+  num2 <- getLine
+  let n1 = read num1 :: Int
+  let n2 = read num2 :: Int
+  putStrLn ("Sum: " ++ show (n1 + n2))
+
+-- HC11T10
+main :: IO ()
+main = do
+  putStrLn "Enter a string:"
+  str <- getLine
+  putStrLn ("Reversed: " ++ reverse str)
